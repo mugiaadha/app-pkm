@@ -31,5 +31,6 @@ jobs:
     
     - name: Deploy your code
       run: |
-        echo "test"
+        cd /var/www/html/app-pkm
+        git pull origin
         # Langkah deployment lainnyaa
