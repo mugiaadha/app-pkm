@@ -1,3 +1,4 @@
 [
-    { "name": "puskesmas", "subdomain": "tabaro.mikahouse.my.id" }
+  { "name": "puskesmas", "subdomain": "tabaro.mikahouse.my.id" },
+  { "name": "staging", "subdomain": "staging.mikahouse.my.id" }
 ]
