@@ -41,7 +41,7 @@ jobs:
       - name: Deploy hasil build ke cabang aktif
         run: |
           VPS_IP="103.84.207.50"
-          for SUBDOMAIN in $(jq -r '.[] | select(.active == true) | .subdomain' cabang-config.json); do
+          for SUBDOMAIN in $(jq -r '.[] | select(.active == true) | .subdomain' .github/workflows/cabang-config.json); do
             echo "Deploy ke $SUBDOMAIN"
             ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN"
             scp -r ./dist/app-pkm/browser/* root@$VPS_IP:/var/www/html/$SUBDOMAIN/
@@ -50,7 +50,7 @@ jobs:
       - name: Deploy halaman non-aktif ke cabang yang belum bayar
         run: |
           VPS_IP="103.84.207.50"
-          for SUBDOMAIN in $(jq -r '.[] | select(.active == false) | .subdomain' cabang-config.json); do
+          for SUBDOMAIN in $(jq -r '.[] | select(.active == false) | .subdomain' .github/workflows/cabang-config.json); do
             echo "Set non-aktif page untuk $SUBDOMAIN"
             ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN"
             scp inactive.html root@$VPS_IP:/var/www/html/$SUBDOMAIN/index.html
