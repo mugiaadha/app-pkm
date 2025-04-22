@@ -34,14 +34,14 @@ jobs:
           ssh root@$VPS_IP 'rm -rf /var/www/html/*'
 
           echo "Buat folder untuk tiap cabang"
-          for SUBDOMAIN in $(jq -r '.[].subdomain' cabang-config.json); do
+          for SUBDOMAIN in $(jq -r '.[].subdomain' .github/workflows/cabang-config.json); do
             ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN"
           done
 
       - name: Deploy hasil build ke semua cabang
         run: |
           VPS_IP="103.84.207.50"
-          for SUBDOMAIN in $(jq -r '.[].subdomain' cabang-config.json); do
+          for SUBDOMAIN in $(jq -r '.[].subdomain' .github/workflows/cabang-config.json); do
             echo "Deploying ke $SUBDOMAIN"
             scp -r ./dist/app-pkm/browser/* root@$VPS_IP:/var/www/html/$SUBDOMAIN/
           done
