@@ -2,11 +2,201 @@
   {
     "name": "puskesmas",
     "subdomain": "tabaro.mikahouse.my.id",
-    "active": false
+    "active": true
   },
   {
     "name": "staging",
     "subdomain": "staging.mikahouse.my.id",
     "active": true
+  },
+  {
+    "name": "production",
+    "subdomain": "mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "development",
+    "subdomain": "dev.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "testing",
+    "subdomain": "test.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "new-feature",
+    "subdomain": "new-feature.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "another-feature",
+    "subdomain": "another-feature.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "new-feature",
+    "subdomain": "new-feature.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "another-feature",
+    "subdomain": "another-feature.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "new-feature",
+    "subdomain": "new-feature.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "another-new-feature",
+    "subdomain": "another-new-feature.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "yet-another-feature",
+    "subdomain": "yet-another-feature.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-xyz",
+    "subdomain": "feature-xyz.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-abc",
+    "subdomain": "feature-abc.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-123",
+    "subdomain": "feature-123.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-456",
+    "subdomain": "feature-456.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-789",
+    "subdomain": "feature-789.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-101112",
+    "subdomain": "feature-101112.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-131415",
+    "subdomain": "feature-131415.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-161718",
+    "subdomain": "feature-161718.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-192021",
+    "subdomain": "feature-192021.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-222324",
+    "subdomain": "feature-222324.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-252627",
+    "subdomain": "feature-252627.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-282930",
+    "subdomain": "feature-282930.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-313233",
+    "subdomain": "feature-313233.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-343536",
+    "subdomain": "feature-343536.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-373839",
+    "subdomain": "feature-373839.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-404142",
+    "subdomain": "feature-404142.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-434445",
+    "subdomain": "feature-434445.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-464748",
+    "subdomain": "feature-464748.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-495051",
+    "subdomain": "feature-495051.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-525354",
+    "subdomain": "feature-525354.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-555657",
+    "subdomain": "feature-555657.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-585960",
+    "subdomain": "feature-585960.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-616263",
+    "subdomain": "feature-616263.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-646566",
+    "subdomain": "feature-646566.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-676869",
+    "subdomain": "feature-676869.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-707172",
+    "subdomain": "feature-707172.mikahouse.my.id",
+    "active": false
+  },
+  {
+    "name": "feature-737475",
+    "subdomain": "feature-737475.mikahouse.my.id",
+    "active": true
+  },
+  {
+    "name": "feature-767778",
+    "subdomain": "feature-767778.mikahouse.my.id",
+    "active": false
   }
 ]
