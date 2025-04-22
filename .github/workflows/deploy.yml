@@ -1,30 +1,32 @@
-name: CI/CD to VPS
+name: Deploy to VPS
 
 on:
   push:
     branches:
-      - main
+      - main  # ganti sesuai branch yang kamu pakai
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
+      - name: Checkout repo
         uses: actions/checkout@v2
 
-      - name: Setup SSH Key
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H 103.84.207.50 >> ~/.ssh/known_hosts
 
-      - name: Clone Private Repo ke VPS Folder Lokal
+      - name: Install dependencies & Build
         run: |
-          git clone git@github.com:mugiaadha/app-pkm.git
+          npm install
+          npm run build
+        # Ganti working-directory kalau project ada di subfolder
+        working-directory: .  # atau "frontend" misalnya
 
-      # Contoh step deploy ke VPS kalau butuh:
-      - name: Deploy ke VPS
+      - name: Copy Build to VPS
         run: |
-          ssh -o StrictHostKeyChecking=no root@103.84.207.50 'echo "Deploy script di sini"'
+          scp -r ./build/* root@103.84.207.50:/var/www/html/app-puskesmas
