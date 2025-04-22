@@ -1,1 +1,6 @@
-[{ "name": "puskesmas", "subdomain": "app-puskesmas.mikahouse.my.id" }]
+[
+    { "name": "puskesmas", "subdomain": "tabaro.mikahouse.my.id" },
+    { "name": "puskesmas", "subdomain": "puceh.mikahouse.my.id" },
+    { "name": "puskesmas", "subdomain": "suakribee.mikahouse.my.id" },
+    { "name": "puskesmas", "subdomain": "makmur.mikahouse.my.id" }
+]
