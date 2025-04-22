@@ -2,7 +2,7 @@
   {
     "name": "puskesmas",
     "subdomain": "tabaro.mikahouse.my.id",
-    "active": true
+    "active": false
   },
   {
     "name": "staging",
