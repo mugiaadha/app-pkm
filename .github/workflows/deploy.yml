@@ -27,4 +27,4 @@ jobs:
       # Contoh step deploy ke VPS kalau butuh:
       - name: Deploy ke VPS
         run: |
-          ssh -o StrictHostKeyChecking=no user@vps-ip 'echo "Deploy script di sinii"'
+          ssh -o StrictHostKeyChecking=no user@vps-ip 'echo "Deploy script di sini"'
