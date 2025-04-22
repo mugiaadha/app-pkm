@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main  # ganti sesuai branch yang kamu pakai
+      - main  # Ganti sesuai branch yang kamu pakai
 
 jobs:
   deploy:
@@ -24,8 +24,7 @@ jobs:
         run: |
           npm install
           npm run build
-        # Ganti working-directory kalau project ada di subfolder
-        working-directory: .  # atau "frontend" misalnya
+        working-directory: .  # Ganti dengan folder subproject jika ada
 
       - name: Copy Build to VPS
         run: |
