@@ -7,6 +7,6 @@
   {
     "name": "staging",
     "subdomain": "staging.mikahouse.my.id",
-    "active": false
+    "active": true
   }
 ]
