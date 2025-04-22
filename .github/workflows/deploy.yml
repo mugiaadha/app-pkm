@@ -31,5 +31,5 @@ jobs:
     
     - name: Deploy your code
       run: |
-        git pull origin
+        echo "test"
         # Langkah deployment lainnyaa
