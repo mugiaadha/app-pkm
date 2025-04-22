@@ -32,4 +32,5 @@ jobs:
     - name: Deploy your code
       run: |
         cd /var/www/html
+        ls
         # Langkah deployment lainnyaa
