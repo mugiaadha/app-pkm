@@ -1,10 +1,12 @@
 [
   {
     "name": "puskesmas",
-    "subdomain": "tabaro.mikahouse.my.id"
+    "subdomain": "tabaro.mikahouse.my.id",
+    "active": true
   },
   {
     "name": "staging",
-    "subdomain": "staging.mikahouse.my.id"
+    "subdomain": "staging.mikahouse.my.id",
+    "active": false
   }
 ]
