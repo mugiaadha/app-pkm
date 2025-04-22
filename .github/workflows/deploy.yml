@@ -1,37 +1,26 @@
-name: Deploy to VPS
+name: Deploy
 
 on:
   push:
     branches:
-      - main  # Ganti dengan nama branch yang kamu inginkan
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - name: Set up SSH key
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.VPS_PRIVATE_KEY }}
-
-    - name: Deploy to VPS using SSH
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_PRIVATE_KEY }}
-        script: |
-          # Ganti perintah berikut dengan yang sesuai untuk aplikasi kamu
-          cd /var/www/html/app-pkm  # Sesuaikan dengan lokasi folder aplikasi kamu
-          git pull origin main  # Pull latest changes dari GitHub
-          npm install  # Install dependencies (Jika menggunakan Node.js)
-          npm run build  # Build aplikasi (Jika menggunakan Angular/React)
-
-          # Salin hasil build ke folder app-puskesmas
-          cp -r /var/www/html/app-pkm/dist/app-pkm/* /var/www/html/app-puskesmas/  # Menyalin file hasil build ke app-puskesmas
-
-          sudo systemctl restart nginx  # Restart Nginx untuk apply perubahan
+    - name: Setup SSH key for GitHub
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy-key
+        chmod 600 ~/.ssh/deploy-key
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+    
+    - name: Deploy your code
+      run: |
+        git clone git@github.com:username/repository.git
+        # Langkah deployment lainnya
