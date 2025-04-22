@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main  # Ganti sesuai branch yang kamu pakai
+      - main # Ganti sesuai branch yang kamu pakai
 
 jobs:
   deploy:
@@ -24,8 +24,24 @@ jobs:
         run: |
           npm install
           npm run build
-        working-directory: .  # Ganti dengan folder subproject jika ada
+        working-directory: . # Ganti dengan folder subproject jika ada
 
-      - name: Copy Build to VPS
+      - name: Bersihkan dan Buat Ulang Folder di VPS
         run: |
-          scp -r ./dist/app-pkm/browser/* root@103.84.207.50:/var/www/html/app-puskesmas.mikahouse.my.id
+          VPS_IP="103.84.207.50"
+
+          echo "Hapus semua folder di /var/www/html"
+          ssh root@$VPS_IP 'rm -rf /var/www/html/*'
+
+          echo "Buat folder untuk tiap cabang"
+          for SUBDOMAIN in $(jq -r '.[].subdomain' cabang-config.json); do
+            ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN"
+          done
+
+      - name: Deploy hasil build ke semua cabang
+        run: |
+          VPS_IP="103.84.207.50"
+          for SUBDOMAIN in $(jq -r '.[].subdomain' cabang-config.json); do
+            echo "Deploying ke $SUBDOMAIN"
+            scp -r ./dist/app-pkm/browser/* root@$VPS_IP:/var/www/html/$SUBDOMAIN/
+          done

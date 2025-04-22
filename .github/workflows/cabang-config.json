@@ -1,0 +1,5 @@
+[
+  { "name": "cabang1", "subdomain": "app-cabang1.mikahouse.my.id" },
+  { "name": "cabang2", "subdomain": "app-cabang2.mikahouse.my.id" },
+  { "name": "cabang3", "subdomain": "app-cabang3.mikahouse.my.id" }
+]
