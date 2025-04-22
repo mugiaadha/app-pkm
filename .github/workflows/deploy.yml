@@ -18,7 +18,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 103.84.207.50 >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Install dependencies & Build
         run: |
@@ -32,7 +32,7 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          VPS_IP="103.84.207.50"
+          VPS_IP="${{ secrets.VPS_HOST }}"
 
           echo "Hapus semua folder di /var/www/html"
           ssh root@$VPS_IP 'rm -rf /var/www/html/*'
