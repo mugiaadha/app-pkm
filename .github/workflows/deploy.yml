@@ -22,15 +22,13 @@ jobs:
           echo "DEPLOY_KEY is set"
         fi
 
-    - name: Setup SSH key for GitHub
+    - name: Setup SSH key for VPS
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy-key
         chmod 600 ~/.ssh/deploy-key
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-    
-    - name: Deploy your code
+        ssh-keyscan 103.84.207.50 >> ~/.ssh/known_hosts  # Ganti dengan IP VPS kamu
+
+    - name: SSH into VPS and deploy
       run: |
-        cd /var/www/html
-        ls
-        # Langkah deployment lainnyaa
+        ssh -i ~/.ssh/deploy-key root@103.84.207.50 "cd /var/www/html && ls && # Langkah deployment lainnya"
