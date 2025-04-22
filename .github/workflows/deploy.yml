@@ -29,4 +29,4 @@ jobs:
 
       - name: Copy Build to VPS
         run: |
-          scp -r ./dist/app-pkm/* root@103.84.207.50:/var/www/html/app-puskesmas
+          scp -r ./dist/app-pkm/* root@103.84.207.50:/var/www/html/app-puskesmas.mikahouse.my.id
