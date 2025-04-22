@@ -13,6 +13,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Debug DEPLOY_KEY
+      run: |
+        echo "Checking if DEPLOY_KEY is set"
+        if [ -z "${{ secrets.DEPLOY_KEY }}" ]; then
+          echo "DEPLOY_KEY is not set"
+        else
+          echo "DEPLOY_KEY is set"
+        fi
+
     - name: Setup SSH key for GitHub
       run: |
         mkdir -p ~/.ssh
@@ -22,5 +31,5 @@ jobs:
     
     - name: Deploy your code
       run: |
-        git clone git@github.com:mugiaadha/app-pkm.git
+        git clone git@github.com:username/repository.git
         # Langkah deployment lainnya
