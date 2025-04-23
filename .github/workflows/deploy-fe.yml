@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Deploy Frontend
 
 on:
   push:
@@ -23,13 +23,6 @@ jobs:
           repository: mugiaadha/app-pkm
           token: ${{ secrets.VPS_PAT_TOKEN }}
           path: frontend
-
-      - name: Checkout Backend Repo
-        uses: actions/checkout@v2
-        with:
-          repository: mugiaadha/umb-ci
-          token: ${{ secrets.VPS_PAT_TOKEN }}
-          path: backend
 
       - name: Install dependencies & Build
         run: |
@@ -69,23 +62,3 @@ jobs:
             scp ./inactive.html root@$VPS_IP:/var/www/html/$SUBDOMAIN/index.html
           done
         working-directory: frontend
-
-      - name: Deploy Backend to VPS
-        run: |
-          VPS_IP="${{ secrets.VPS_HOST }}"
-
-          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
-
-          # Kompres folder backend
-          tar czf backend.tar.gz ./*
-
-          for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
-            echo "Deploy ke $SUBDOMAIN"
-
-            ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN/backend/"
-            scp backend.tar.gz root@$VPS_IP:/var/www/html/$SUBDOMAIN/backend/
-            ssh root@$VPS_IP "cd /var/www/html/$SUBDOMAIN/backend && tar xzf backend.tar.gz && rm backend.tar.gz"
-          done
-
-          rm backend.tar.gz
-        working-directory: backend
