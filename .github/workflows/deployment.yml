@@ -52,16 +52,16 @@ jobs:
             fe_path="/var/www/html/$SUBDOMAIN"
 
             ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz -e "ssh -o ServerAliveInterval=60" --delete --exclude='.git' dist/app-pkm/browser/ root@$VPS_IP:$fe_path/
+            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' dist/app-pkm/browser/ root@$VPS_IP:$fe_path/
           done
 
           for SUBDOMAIN in $INACTIVE_SUBDOMAINS; do
             echo "Set non-aktif page untuk $SUBDOMAIN"
-            
+
             fe_path="/var/www/html/$SUBDOMAIN"
 
             ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz -e "ssh -o ServerAliveInterval=60" --delete --exclude='.git' ./inactive.html root@$VPS_IP:$fe_path/index.html
+            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./inactive.html root@$VPS_IP:$fe_path/index.html
           done
         working-directory: frontend
 
@@ -103,6 +103,6 @@ jobs:
             ssh root@$VPS_IP "mkdir -p $be_path"
 
             # Kirim file menggunakan rsync
-            rsync -avz -e "ssh -o ServerAliveInterval=60" --delete --exclude='.git' ./ root@$VPS_IP:$be_path/
+            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./ root@$VPS_IP:$be_path/
           done
         working-directory: backend
