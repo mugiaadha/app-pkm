@@ -47,7 +47,7 @@ jobs:
             ssh root@$VPS_IP "mkdir -p $path_be"
 
             # Kirim file arsip
-            scp backend.tar.gz root@$VPS_IP:$path_be/
+            scp backend.tar.gz root@$VPS_IP:$path_be
 
             # Ekstrak dan hapus file arsip
             ssh root@$VPS_IP << EOF
