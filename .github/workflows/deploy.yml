@@ -41,7 +41,7 @@ jobs:
         run: |
           curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
 
-      - name: Deploy to VPS
+      - name: Deploy Frontend to VPS
         run: |
           VPS_IP="${{ secrets.VPS_HOST }}"
 
@@ -63,3 +63,16 @@ jobs:
             scp -r ./inactive.html root@$VPS_IP:/var/www/html/$SUBDOMAIN/index.html
           done
         working-directory: frontend
+
+      - name: Deploy Backend to VPS
+        run: |
+          VPS_IP="${{ secrets.VPS_HOST }}"
+
+          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
+
+          for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
+            echo "Deploy ke $SUBDOMAIN"
+            ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN"
+            scp -r ./* root@$VPS_IP:/var/www/html/$SUBDOMAIN/backend/
+          done
+        working-directory: backend
