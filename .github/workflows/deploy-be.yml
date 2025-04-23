@@ -44,6 +44,6 @@ jobs:
             ssh root@$VPS_IP "mkdir -p $be_path"
 
             # Kirim file menggunakan rsync
-            rsync -avz --delete ./ root@$VPS_IP:$be_path/
+            rsync -avz --delete --exclude='.git' ./ root@$VPS_IP:$be_path/
           done
         working-directory: backend
