@@ -21,7 +21,7 @@ jobs:
       - name: Checkout Backend Repo
         uses: actions/checkout@v2
         with:
-          repository: mugiaadha/umb-ci
+          repository: mugiaadha/app-pkm-clenic
           token: ${{ secrets.VPS_PAT_TOKEN }}
           path: backend
 
