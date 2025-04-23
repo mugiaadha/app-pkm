@@ -57,6 +57,9 @@ jobs:
 
           for SUBDOMAIN in $INACTIVE_SUBDOMAINS; do
             echo "Set non-aktif page untuk $SUBDOMAIN"
+            
+            fe_path="/var/www/html/$SUBDOMAIN"
+
             ssh root@$VPS_IP "mkdir -p $fe_path"
             rsync -avz -e "ssh -o ServerAliveInterval=60" --delete --exclude='.git' ./inactive.html root@$VPS_IP:$fe_path/index.html
           done
