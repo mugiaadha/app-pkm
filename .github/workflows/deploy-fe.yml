@@ -38,9 +38,6 @@ jobs:
         run: |
           VPS_IP="${{ secrets.VPS_HOST }}"
 
-          echo "Hapus semua folder di /var/www/html"
-          ssh root@$VPS_IP 'rm -rf /var/www/html/*'
-
           ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
           INACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == false) | .subdomain' ../cabang-config.json)
 
@@ -55,12 +52,12 @@ jobs:
             fe_path="/var/www/html/$SUBDOMAIN"
 
             ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz dist/app-pkm/browser/ root@$VPS_IP:$fe_path/
+            rsync -avz --delete dist/app-pkm/browser/ root@$VPS_IP:$fe_path/
           done
 
           for SUBDOMAIN in $INACTIVE_SUBDOMAINS; do
             echo "Set non-aktif page untuk $SUBDOMAIN"
             ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz ./inactive.html root@$VPS_IP:$fe_path/index.html
+            rsync -avz --delete ./inactive.html root@$VPS_IP:$fe_path/index.html
           done
         working-directory: frontend
