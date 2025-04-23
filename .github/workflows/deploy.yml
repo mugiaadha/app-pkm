@@ -72,8 +72,7 @@ jobs:
 
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
             echo "Deploy ke $SUBDOMAIN"
-            ls
-            # ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN/backend/"
-            # scp -r ./* root@$VPS_IP:/var/www/html/$SUBDOMAIN/backend/
+            ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN/backend/"
+            scp -r ./* root@$VPS_IP:/var/www/html/$SUBDOMAIN/backend/
           done
         working-directory: backend
