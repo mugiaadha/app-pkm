@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Backend Repo
         uses: actions/checkout@v2
         with:
-          repository: mugiaadha/app-pkm
+          repository: mugiaadha/umb-ci
           token: ${{ secrets.VPS_PAT_TOKEN }}
           path: backend
 
