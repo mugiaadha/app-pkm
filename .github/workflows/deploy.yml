@@ -11,14 +11,14 @@ jobs:
 
     steps:
       - name: Checkout Frontend Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         with:
           repository: mugiaadha/app-pkm
           token: ${{ secrets.VPS_PAT_TOKEN }}
           path: frontend
 
       - name: Checkout Backend Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         with:
           repository: mugiaadha/app-pkm
           token: ${{ secrets.VPS_PAT_TOKEN }}
