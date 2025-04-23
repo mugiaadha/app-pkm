@@ -33,6 +33,7 @@ jobs:
 
       - name: Install dependencies & Build
         run: |
+          cd v1
           npm install
           npm run build
         working-directory: .
