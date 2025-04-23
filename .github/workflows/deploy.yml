@@ -10,8 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
+      - name: Checkout Frontend Repo
+        uses: actions/checkout@v4
+        with:
+          repository: mugiaadha/app-pkm
+          token: ${{ secrets.VPS_PAT_TOKEN }}
+          path: v1
+
+      - name: Checkout Backend Repo
+        uses: actions/checkout@v4
+        with:
+          repository: mugiaadha/app-pkm
+          token: ${{ secrets.VPS_PAT_TOKEN }}
+          path: clenic
 
       - name: Setup SSH
         run: |
