@@ -10,19 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Frontend Repo
-        uses: actions/checkout@v2
-        with:
-          repository: mugiaadha/app-pkm
-          token: ${{ secrets.VPS_PAT_TOKEN }}
-          path: frontend
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          
+      - name: Checkout Frontend Repo
+        uses: actions/checkout@v2
+        with:
+          repository: mugiaadha/app-pkm
+          token: ${{ secrets.VPS_PAT_TOKEN }}
+          path: frontend
 
       - name: Install dependencies & Build
         run: |
