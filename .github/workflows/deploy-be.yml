@@ -56,6 +56,4 @@ jobs:
               rm backend.tar.gz
             EOF
           done
-
-          rm backend.tar.gz
         working-directory: backend
