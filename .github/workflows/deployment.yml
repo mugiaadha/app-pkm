@@ -41,18 +41,13 @@ jobs:
           ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
           INACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == false) | .subdomain' ../cabang-config.json)
 
-          echo "Kompresi hasil build..."
-          cd dist/app-pkm/browser
-          tar czf ../../frontend.tar.gz ./*
-          cd -
-
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
             echo "Deploy ke $SUBDOMAIN"
 
             fe_path="/var/www/html/$SUBDOMAIN"
 
             ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' dist/app-pkm/browser/ root@$VPS_IP:$fe_path/
+            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' dist/app-pkm/browser/ root@$VPS_IP:$fe_path/ --log-file=rsync_log.txt
           done
 
           for SUBDOMAIN in $INACTIVE_SUBDOMAINS; do
@@ -61,7 +56,7 @@ jobs:
             fe_path="/var/www/html/$SUBDOMAIN"
 
             ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./inactive.html root@$VPS_IP:$fe_path/index.html
+            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./inactive.html root@$VPS_IP:$fe_path/index.html --log-file=rsync_log.txt
           done
         working-directory: frontend
 
@@ -103,6 +98,6 @@ jobs:
             ssh root@$VPS_IP "mkdir -p $be_path"
 
             # Kirim file menggunakan rsync
-            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./ root@$VPS_IP:$be_path/
+            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./ root@$VPS_IP:$be_path/ --log-file=rsync_log.txt
           done
         working-directory: backend
