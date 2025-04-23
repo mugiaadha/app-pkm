@@ -17,13 +17,6 @@ jobs:
           token: ${{ secrets.VPS_PAT_TOKEN }}
           path: frontend
 
-      - name: Checkout Backend Repo
-        uses: actions/checkout@v2
-        with:
-          repository: mugiaadha/app-pkm
-          token: ${{ secrets.VPS_PAT_TOKEN }}
-          path: backend
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -63,16 +56,3 @@ jobs:
             scp -r ./inactive.html root@$VPS_IP:/var/www/html/$SUBDOMAIN/index.html
           done
         working-directory: frontend
-
-      - name: Deploy Backend to VPS
-        run: |
-          VPS_IP="${{ secrets.VPS_HOST }}"
-
-          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
-
-          for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
-            echo "Deploy ke $SUBDOMAIN"
-            ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN"
-            scp -r ./* root@$VPS_IP:/var/www/html/$SUBDOMAIN/backend/
-          done
-        working-directory: backend
