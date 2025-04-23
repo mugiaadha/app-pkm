@@ -48,8 +48,8 @@ jobs:
           echo "Hapus semua folder di /var/www/html"
           ssh root@$VPS_IP 'rm -rf /var/www/html/*'
 
-          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' cabang-config.json)
-          INACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == false) | .subdomain' cabang-config.json)
+          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
+          INACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == false) | .subdomain' ../cabang-config.json)
 
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
             echo "Deploy ke $SUBDOMAIN"
