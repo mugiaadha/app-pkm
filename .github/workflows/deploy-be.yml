@@ -1,49 +1,49 @@
-name: Deploy Backend
+# name: Deploy Backend
 
-on:
-  workflow_run:
-    workflows: ["Deploy Frontend"]
-    types:
-      - completed
+# on:
+#   workflow_run:
+#     workflows: ["Deploy Frontend"]
+#     types:
+#       - completed
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+#     steps:
+#       - name: Setup SSH
+#         run: |
+#           mkdir -p ~/.ssh
+#           echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#           chmod 600 ~/.ssh/id_rsa
+#           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Checkout Backend Repo
-        uses: actions/checkout@v2
-        with:
-          repository: mugiaadha/app-pkm-clenic
-          token: ${{ secrets.VPS_PAT_TOKEN }}
-          path: backend
+#       - name: Checkout Backend Repo
+#         uses: actions/checkout@v2
+#         with:
+#           repository: mugiaadha/app-pkm-clenic
+#           token: ${{ secrets.VPS_PAT_TOKEN }}
+#           path: backend
 
-      - name: Download cabang-config.json from Supabase
-        run: |
-          curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
+#       - name: Download cabang-config.json from Supabase
+#         run: |
+#           curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
 
-      - name: Deploy Backend to VPS
-        run: |
-          VPS_IP="${{ secrets.VPS_HOST }}"
+#       - name: Deploy Backend to VPS
+#         run: |
+#           VPS_IP="${{ secrets.VPS_HOST }}"
 
-          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
+#           ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
 
-          for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
-            echo "Deploy ke $SUBDOMAIN"
+#           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
+#             echo "Deploy ke $SUBDOMAIN"
 
-            be_path="/var/www/html/$SUBDOMAIN/backend"
+#             be_path="/var/www/html/$SUBDOMAIN/backend"
 
-            # Buat folder kalau belum ada
-            ssh root@$VPS_IP "mkdir -p $be_path"
+#             # Buat folder kalau belum ada
+#             ssh root@$VPS_IP "mkdir -p $be_path"
 
-            # Kirim file menggunakan rsync
-            rsync -avz --delete --exclude='.git' ./ root@$VPS_IP:$be_path/
-          done
-        working-directory: backend
+#             # Kirim file menggunakan rsync
+#             rsync -avz --delete --exclude='.git' ./ root@$VPS_IP:$be_path/
+#           done
+#         working-directory: backend
