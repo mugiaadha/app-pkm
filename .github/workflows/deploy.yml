@@ -15,14 +15,14 @@ jobs:
         with:
           repository: mugiaadha/app-pkm
           token: ${{ secrets.VPS_PAT_TOKEN }}
-          path: v1
+          path: frontend
 
       - name: Checkout Backend Repo
         uses: actions/checkout@v4
         with:
           repository: mugiaadha/app-pkm
           token: ${{ secrets.VPS_PAT_TOKEN }}
-          path: clenic
+          path: backend
 
       - name: Setup SSH
         run: |
@@ -33,10 +33,9 @@ jobs:
 
       - name: Install dependencies & Build
         run: |
-          cd v1
           npm install
           npm run build
-        working-directory: .
+        working-directory: frontend
 
       - name: Download cabang-config.json from Supabase
         run: |
@@ -55,11 +54,11 @@ jobs:
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
             echo "Deploy ke $SUBDOMAIN"
             ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN"
-            scp -r ./dist/app-pkm/browser/* root@$VPS_IP:/var/www/html/$SUBDOMAIN/
+            scp -r ./frontend/dist/app-pkm/browser/* root@$VPS_IP:/var/www/html/$SUBDOMAIN/
           done
 
           for SUBDOMAIN in $INACTIVE_SUBDOMAINS; do
             echo "Set non-aktif page untuk $SUBDOMAIN"
             ssh root@$VPS_IP "mkdir -p /var/www/html/$SUBDOMAIN"
-            scp inactive.html root@$VPS_IP:/var/www/html/$SUBDOMAIN/index.html
+            scp -r ./frontend/inactive.html root@$VPS_IP:/var/www/html/$SUBDOMAIN/index.html
           done
