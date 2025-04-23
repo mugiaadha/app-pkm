@@ -39,10 +39,9 @@ jobs:
           tar czf backend.tar.gz ./*
 
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
-            path_be=/var/www/html/$SUBDOMAIN/backend
-
             echo "Deploy ke $SUBDOMAIN"
 
+            path_be=/var/www/html/$SUBDOMAIN/backend
             ssh root@$VPS_IP "mkdir -p $path_be"
             scp backend.tar.gz root@$VPS_IP:$path_be
             ssh root@$VPS_IP "cd $path_be && tar xzf backend.tar.gz && rm backend.tar.gz"
