@@ -80,4 +80,6 @@ jobs:
             scp backend.tar.gz root@$VPS_IP:/var/www/html/$SUBDOMAIN/backend/
             ssh root@$VPS_IP "cd /var/www/html/$SUBDOMAIN/backend && tar xzf backend.tar.gz && rm backend.tar.gz"
           done
+
+          rm backend.tar.gz
         working-directory: backend
