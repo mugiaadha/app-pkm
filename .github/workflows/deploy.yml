@@ -24,6 +24,13 @@ jobs:
           token: ${{ secrets.VPS_PAT_TOKEN }}
           path: frontend
 
+      - name: Checkout Backend Repo
+        uses: actions/checkout@v2
+        with:
+          repository: mugiaadha/umb-ci
+          token: ${{ secrets.VPS_PAT_TOKEN }}
+          path: backend
+
       - name: Install dependencies & Build
         run: |
           npm install
@@ -56,13 +63,6 @@ jobs:
             scp -r ./inactive.html root@$VPS_IP:/var/www/html/$SUBDOMAIN/index.html
           done
         working-directory: frontend
-
-      - name: Checkout Backend Repo
-        uses: actions/checkout@v2
-        with:
-          repository: mugiaadha/umb-ci
-          token: ${{ secrets.VPS_PAT_TOKEN }}
-          path: backend
 
       - name: Deploy Backend to VPS
         run: |
