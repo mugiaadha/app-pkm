@@ -72,13 +72,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Checkout Backend Repo
-        uses: actions/checkout@v2
-        with:
-          repository: mugiaadha/app-pkm-clenic
-          token: ${{ secrets.VPS_PAT_TOKEN }}
-          path: backend
-
       - name: Download cabang-config.json from Supabase
         run: |
           curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
@@ -97,7 +90,52 @@ jobs:
             # Buat folder kalau belum ada
             ssh root@$VPS_IP "mkdir -p $be_path"
 
-            # Kirim file menggunakan rsync
-            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./ root@$VPS_IP:$be_path/ --log-file=rsync_log.txt
+            # Clone repository langsung ke VPS
+            ssh root@$VPS_IP "git clone git@github.com:mugiaadha/app-pkm-clenic.git $be_path"
+
+            # Menjalankan setup atau perintah lain yang diperlukan setelah clone (misal: install dependencies)
+            ssh root@$VPS_IP "cd $be_path && git pull origin main && npm install" # Sesuaikan dengan perintah setup BE
+
           done
-        working-directory: backend
+
+  # deploy-backend:
+  #   needs: deploy-frontend
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Setup SSH
+  #       run: |
+  #         mkdir -p ~/.ssh
+  #         echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+  #         chmod 600 ~/.ssh/id_rsa
+  #         ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+  #     - name: Checkout Backend Repo
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: mugiaadha/app-pkm-clenic
+  #         token: ${{ secrets.VPS_PAT_TOKEN }}
+  #         path: backend
+
+  #     - name: Download cabang-config.json from Supabase
+  #       run: |
+  #         curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
+
+  #     - name: Deploy Backend to VPS
+  #       run: |
+  #         VPS_IP="${{ secrets.VPS_HOST }}"
+
+  #         ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
+
+  #         for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
+  #           echo "Deploy ke $SUBDOMAIN"
+
+  #           be_path="/var/www/html/$SUBDOMAIN/backend"
+
+  #           # Buat folder kalau belum ada
+  #           ssh root@$VPS_IP "mkdir -p $be_path"
+
+  #           # Kirim file menggunakan rsync
+  #           rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./ root@$VPS_IP:$be_path/ --log-file=rsync_log.txt
+  #         done
+  #       working-directory: backend
