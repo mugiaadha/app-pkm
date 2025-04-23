@@ -50,10 +50,6 @@ jobs:
             scp backend.tar.gz root@$VPS_IP:$path_be
 
             # Ekstrak dan hapus file arsip
-            ssh root@$VPS_IP << EOF
-              cd $path_be && \
-              tar -xzf backend.tar.gz && \
-              rm backend.tar.gz
-            EOF
+            ssh root@$VPS_IP "cd $path_be && tar -xzf backend.tar.gz && rm backend.tar.gz"
           done
         working-directory: backend
