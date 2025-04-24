@@ -83,21 +83,29 @@ jobs:
         run: |
           curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
 
-      - name: Deploy Backend to VPS
+      - name: Compress Backend Folder
+        run: |
+          tar --exclude='.git' --exclude='vendor' -czf backend.tar.gz -C backend .
+        working-directory: .
+
+      - name: Upload and Extract Backend on VPS
         run: |
           VPS_IP="${{ secrets.VPS_HOST }}"
 
-          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
+          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' cabang-config.json)
 
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
             echo "Deploy ke $SUBDOMAIN"
 
             be_path="/var/www/html/$SUBDOMAIN/backend"
 
-            # Buat folder kalau belum ada
+            # Buat folder tujuan
             ssh root@$VPS_IP "mkdir -p $be_path"
 
-            # Kirim file menggunakan rsync
-            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./ root@$VPS_IP:$be_path/ --log-file=rsync_log.txt
+            # Upload file .tar.gz
+            scp backend.tar.gz root@$VPS_IP:$be_path/
+
+            # Ekstrak di VPS lalu hapus file arsip
+            ssh root@$VPS_IP "tar -xzf $be_path/backend.tar.gz -C $be_path && rm $be_path/backend.tar.gz"
           done
-        working-directory: backend
+        working-directory: .
