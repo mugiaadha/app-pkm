@@ -85,7 +85,7 @@ jobs:
 
       - name: Compress Backend Folder
         run: |
-          tar --exclude='.git' --exclude='vendor' -czf backend.tar.gz -C backend .
+          tar --exclude='.git' -czf backend.tar.gz -C backend .
         working-directory: .
 
       - name: Upload and Extract Backend on VPS
