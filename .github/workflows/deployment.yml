@@ -94,7 +94,7 @@ jobs:
             ssh root@$VPS_IP "git clone git@github.com:mugiaadha/app-pkm-clenic.git $be_path"
 
             # Menjalankan setup atau perintah lain yang diperlukan setelah clone (misal: install dependencies)
-            ssh root@$VPS_IP "cd $be_path && git pull origin main && npm install" # Sesuaikan dengan perintah setup BE
+            ssh root@$VPS_IP "cd $be_path && git pull origin main" # Sesuaikan dengan perintah setup BE
 
           done
 
