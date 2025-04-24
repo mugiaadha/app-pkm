@@ -80,7 +80,7 @@ jobs:
         run: |
           VPS_IP="${{ secrets.VPS_HOST }}"
 
-          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
+          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ./cabang-config.json)
 
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
             echo "Deploy ke $SUBDOMAIN"
@@ -95,7 +95,6 @@ jobs:
 
             # Menjalankan setup atau perintah lain yang diperlukan setelah clone (misal: install dependencies)
             ssh root@$VPS_IP "cd $be_path && git pull origin main" # Sesuaikan dengan perintah setup BE
-
           done
 
   # deploy-backend:
