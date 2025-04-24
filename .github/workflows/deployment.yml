@@ -83,6 +83,11 @@ jobs:
         run: |
           curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
 
+      - name: Compress Backend Folder
+        run: |
+          tar --exclude='.git' --exclude='vendor' --exclude='report' \
+          -czf backend.tar.gz -C backend .
+
       - name: Upload and Extract Backend on VPS (via rsync)
         run: |
           VPS_IP="${{ secrets.VPS_HOST }}"
