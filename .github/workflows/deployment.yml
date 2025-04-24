@@ -6,59 +6,59 @@ on:
       - main
 
 jobs:
-  deploy-frontend:
-    runs-on: ubuntu-latest
+  # deploy-frontend:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+  #   steps:
+  #     - name: Setup SSH
+  #       run: |
+  #         mkdir -p ~/.ssh
+  #         echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+  #         chmod 600 ~/.ssh/id_rsa
+  #         ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Checkout Frontend Repo
-        uses: actions/checkout@v2
-        with:
-          repository: mugiaadha/app-pkm
-          token: ${{ secrets.VPS_PAT_TOKEN }}
-          path: frontend
+  #     - name: Checkout Frontend Repo
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: mugiaadha/app-pkm
+  #         token: ${{ secrets.VPS_PAT_TOKEN }}
+  #         path: frontend
 
-      - name: Install dependencies & Build
-        run: |
-          npm install
-          npm run build
-        working-directory: frontend
+  #     - name: Install dependencies & Build
+  #       run: |
+  #         npm install
+  #         npm run build
+  #       working-directory: frontend
 
-      - name: Download cabang-config.json from Supabase
-        run: |
-          curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
+  #     - name: Download cabang-config.json from Supabase
+  #       run: |
+  #         curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
 
-      - name: Deploy Frontend to VPS
-        run: |
-          VPS_IP="${{ secrets.VPS_HOST }}"
+  #     - name: Deploy Frontend to VPS
+  #       run: |
+  #         VPS_IP="${{ secrets.VPS_HOST }}"
 
-          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
-          INACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == false) | .subdomain' ../cabang-config.json)
+  #         ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
+  #         INACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == false) | .subdomain' ../cabang-config.json)
 
-          for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
-            echo "Deploy ke $SUBDOMAIN"
+  #         for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
+  #           echo "Deploy ke $SUBDOMAIN"
 
-            fe_path="/var/www/html/$SUBDOMAIN/frontend"
+  #           fe_path="/var/www/html/$SUBDOMAIN/frontend"
 
-            ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' dist/app-pkm/browser/ root@$VPS_IP:$fe_path/ --log-file=rsync_log.txt
-          done
+  #           ssh root@$VPS_IP "mkdir -p $fe_path"
+  #           rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' dist/app-pkm/browser/ root@$VPS_IP:$fe_path/ --log-file=rsync_log.txt
+  #         done
 
-          for SUBDOMAIN in $INACTIVE_SUBDOMAINS; do
-            echo "Set non-aktif page untuk $SUBDOMAIN"
+  #         for SUBDOMAIN in $INACTIVE_SUBDOMAINS; do
+  #           echo "Set non-aktif page untuk $SUBDOMAIN"
 
-            fe_path="/var/www/html/$SUBDOMAIN/frontend"
+  #           fe_path="/var/www/html/$SUBDOMAIN/frontend"
 
-            ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./inactive.html root@$VPS_IP:$fe_path/index.html --log-file=rsync_log.txt
-          done
-        working-directory: frontend
+  #           ssh root@$VPS_IP "mkdir -p $fe_path"
+  #           rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./inactive.html root@$VPS_IP:$fe_path/index.html --log-file=rsync_log.txt
+  #         done
+  #       working-directory: frontend
 
   deploy-backend:
     # needs: deploy-frontend
