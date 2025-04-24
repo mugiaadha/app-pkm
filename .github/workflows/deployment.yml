@@ -44,7 +44,7 @@ jobs:
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
             echo "Deploy ke $SUBDOMAIN"
 
-            fe_path="/var/www/html/$SUBDOMAIN"
+            fe_path="/var/www/html/$SUBDOMAIN/frontend"
 
             ssh root@$VPS_IP "mkdir -p $fe_path"
             rsync -av "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' dist/app-pkm/browser/ root@$VPS_IP:$fe_path/ --log-file=rsync_log.txt
