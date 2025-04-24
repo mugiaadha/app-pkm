@@ -82,24 +82,29 @@ jobs:
       - name: Download cabang-config.json from Supabase
         run: |
           curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
+          - name: Compress Backend Folder
+          run: |
+            tar --exclude='.git' --exclude='vendor' --exclude='report' \
+            -czf backend.tar.gz -C backend .
 
-      - name: Deploy Backend to VPS
+      - name: Upload and Extract Backend on VPS (via rsync)
         run: |
           VPS_IP="${{ secrets.VPS_HOST }}"
-
-          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
+          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' cabang-config.json)
 
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
             echo "Deploy ke $SUBDOMAIN"
-
             be_path="/var/www/html/$SUBDOMAIN/backend"
 
-            # Buat folder kalau belum ada
+            # Buat folder
             ssh root@$VPS_IP "mkdir -p $be_path"
 
-            # Kirim file menggunakan rsync
-            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./ root@$VPS_IP:$be_path/ --log-file=rsync_log.txt
+            # Kirim arsip pakai rsync
+            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" \
+            backend.tar.gz root@$VPS_IP:$be_path/
 
-            sleep 10
+            # Ekstrak arsip di VPS
+            ssh root@$VPS_IP "tar -xzf $be_path/backend.tar.gz -C $be_path && rm $be_path/backend.tar.gz"
           done
+
         working-directory: backend
