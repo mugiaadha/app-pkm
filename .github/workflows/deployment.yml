@@ -59,7 +59,7 @@ jobs:
             echo "Deploy ke $SUBDOMAIN"
             fe_path="/var/www/html/$SUBDOMAIN"
             ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz --delete --exclude='.git' --quiet dist/app-pkm/browser/ root@$VPS_IP:$fe_path/
+            rsync -avz --delete --exclude='.git' --exclude='/backend' --quiet dist/app-pkm/browser/ root@$VPS_IP:$fe_path/
           done
 
           # Set non-active pages for Inactive Subdomains
@@ -67,7 +67,7 @@ jobs:
             echo "Set non-aktif page untuk $SUBDOMAIN"
             fe_path="/var/www/html/$SUBDOMAIN"
             ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz --delete --exclude='.git' --quiet ./inactive.html root@$VPS_IP:$fe_path/index.html
+            rsync -avz --delete --exclude='.git' --exclude='/backend' --quiet ./inactive.html root@$VPS_IP:$fe_path/index.html
           done
         working-directory: frontend
 
