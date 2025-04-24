@@ -29,7 +29,7 @@ jobs:
 
       # Checkout frontend repo
       - name: Checkout Frontend Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: mugiaadha/app-pkm
           token: ${{ secrets.VPS_PAT_TOKEN }}
@@ -86,7 +86,7 @@ jobs:
 
       # Checkout backend repo
       - name: Checkout Backend Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: mugiaadha/app-pkm-clenic
           token: ${{ secrets.VPS_PAT_TOKEN }}
