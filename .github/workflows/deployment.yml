@@ -61,7 +61,7 @@ jobs:
         working-directory: frontend
 
   deploy-backend:
-    needs: deploy-frontend
+    # needs: deploy-frontend
     runs-on: ubuntu-latest
 
     steps:
