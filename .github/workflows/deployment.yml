@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Setup SSH key and known hosts only once
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -18,56 +17,46 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      # Cache node_modules to speed up the npm install step
-      - name: Cache npm dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
-
-      # Checkout frontend repo
       - name: Checkout Frontend Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           repository: mugiaadha/app-pkm
           token: ${{ secrets.VPS_PAT_TOKEN }}
           path: frontend
 
-      # Install dependencies and build project
       - name: Install dependencies & Build
         run: |
           npm install
           npm run build
         working-directory: frontend
 
-      # Download cabang-config.json from Supabase
       - name: Download cabang-config.json from Supabase
         run: |
           curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
 
-      # Deploy Frontend to VPS
       - name: Deploy Frontend to VPS
         run: |
           VPS_IP="${{ secrets.VPS_HOST }}"
+
           ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
           INACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == false) | .subdomain' ../cabang-config.json)
 
-          # Deploy to Active Subdomains
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
             echo "Deploy ke $SUBDOMAIN"
+
             fe_path="/var/www/html/$SUBDOMAIN"
+
             ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz --delete --exclude='.git' --exclude='/backend' --quiet dist/app-pkm/browser/ root@$VPS_IP:$fe_path/
+            rsync -av "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' dist/app-pkm/browser/ root@$VPS_IP:$fe_path/ --log-file=rsync_log.txt
           done
 
-          # Set non-active pages for Inactive Subdomains
           for SUBDOMAIN in $INACTIVE_SUBDOMAINS; do
             echo "Set non-aktif page untuk $SUBDOMAIN"
-            fe_path="/var/www/html/$SUBDOMAIN"
+
+            fe_path="/var/www/html/$SUBDOMAIN/frontend"
+
             ssh root@$VPS_IP "mkdir -p $fe_path"
-            rsync -avz --delete --exclude='.git' --exclude='/backend' --quiet ./inactive.html root@$VPS_IP:$fe_path/index.html
+            rsync -av "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./inactive.html root@$VPS_IP:$fe_path/index.html --log-file=rsync_log.txt
           done
         working-directory: frontend
 
@@ -76,7 +65,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Setup SSH key and known hosts once for backend as well
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -84,30 +72,32 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      # Checkout backend repo
       - name: Checkout Backend Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           repository: mugiaadha/app-pkm-clenic
           token: ${{ secrets.VPS_PAT_TOKEN }}
           path: backend
 
-      # Download cabang-config.json from Supabase
       - name: Download cabang-config.json from Supabase
         run: |
           curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
 
-      # Deploy Backend to VPS
       - name: Deploy Backend to VPS
         run: |
           VPS_IP="${{ secrets.VPS_HOST }}"
+
           ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
 
-          # Deploy to Active Subdomains
           for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
             echo "Deploy ke $SUBDOMAIN"
+
             be_path="/var/www/html/$SUBDOMAIN/backend"
+
+            # Buat folder kalau belum ada
             ssh root@$VPS_IP "mkdir -p $be_path"
-            rsync -avz --delete --exclude='.git' --quiet ./ root@$VPS_IP:$be_path/
+
+            # Kirim file menggunakan rsync
+            rsync -av "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./ root@$VPS_IP:$be_path/ --log-file=rsync_log.txt
           done
         working-directory: backend
