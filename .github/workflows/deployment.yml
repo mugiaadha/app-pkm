@@ -29,8 +29,8 @@ jobs:
       - name: FTP Deploy to ${{ matrix.folder }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          server: 103.93.56.225:2110
+          username: admin_ftpmugia
+          password: FtpMugia@3
           local-dir: ./dist/app-pkm/
           server-dir: ./${{ matrix.folder }}/test-auto/
