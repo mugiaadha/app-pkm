@@ -1,6 +1,9 @@
 name: Deploy FTP
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -8,7 +11,37 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: [kulam, ulka, meuraxa]
+        folder:
+          [
+            indrapuri,
+            lampupok,
+            alang,
+            lampisang,
+            tabaro,
+            glie,
+            jantho,
+            darulkamal,
+            kanbada,
+            mesraya,
+            lhoong,
+            lhoknga,
+            leupung,
+            puceh,
+            meureubo,
+            johanpahlawan,
+            suakribee,
+            cotseumeureung,
+            peureumeu,
+            meutulang,
+            pasiemali,
+            kualabhee,
+            tangkeh,
+            kutapadanglayung,
+            drienrampak,
+            kulam,
+            ulka,
+            meuraxa
+          ]
 
     steps:
       - uses: actions/checkout@v3
