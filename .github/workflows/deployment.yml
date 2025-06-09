@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   generate-matrix:
@@ -20,9 +19,9 @@ jobs:
         run: |
           echo "Fetching branches…"
           json=$(curl -s https://emr.clenicapp.com/api/get-branches)
-          # Ambil nama cabang dari response.data array
-          matrix=$(echo "$json" | jq -c '.data | [$‐]')  # format: ["cab1","cab2",…]
-          echo "::set-output name=matrix::$matrix"
+          matrix=$(echo "$json" | jq -c '.data')
+          echo "Matrix: $matrix"
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   build:
     needs: generate-matrix
