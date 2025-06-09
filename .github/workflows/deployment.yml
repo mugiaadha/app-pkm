@@ -47,11 +47,12 @@ jobs:
           path: ./dist/app-pkm/browser/
 
   deploy:
-    needs: build
+    needs: [build, generate-matrix]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+        folder: "${{ fromJson(needs.generate-matrix.outputs.matrix) }}"
+
     steps:
       - uses: actions/checkout@v3
 
