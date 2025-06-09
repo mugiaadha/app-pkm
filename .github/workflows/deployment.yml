@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: [tabaro.clenicapp.com/test-auto]
+        folder: [tabaro.clenicapp.com/test-auto/]
 
     steps:
       - uses: actions/checkout@v3
