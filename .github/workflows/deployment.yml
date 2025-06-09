@@ -1,4 +1,4 @@
-name: Deploy FTP
+name: Build and Deploy FTP
 
 on:
   push:
@@ -6,7 +6,32 @@ on:
       - main
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-name: build-artifact
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: ./dist/app-pkm/browser/
+
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,20 +66,14 @@ jobs:
             ulka,
             meuraxa,
           ]
-
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
         with:
-          node-version: "18" # sesuaikan versi node yang kamu pakai
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build app
-        run: npm run build
+          name: build-artifact
+          path: ./dist/app-pkm/browser/
 
       - name: FTP Deploy to ${{ matrix.folder }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
