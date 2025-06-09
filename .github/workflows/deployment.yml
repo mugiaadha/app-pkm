@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   deploy:
@@ -40,7 +39,7 @@ jobs:
             drienrampak,
             kulam,
             ulka,
-            meuraxa
+            meuraxa,
           ]
 
     steps:
