@@ -53,8 +53,6 @@ jobs:
         folder: "${{ fromJson(needs.generate-matrix.outputs.matrix) }}"
 
     steps:
-      - uses: actions/checkout@v3
-
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
