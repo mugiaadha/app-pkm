@@ -1,15 +1,32 @@
-name: Build and Deploy FTP
+name: Build & Deploy workflow
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  build:
+  generate-matrix:
     runs-on: ubuntu-latest
     outputs:
-      artifact-name: build-artifact
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Ambil list branches dari API & generate matrix
+        id: set-matrix
+        run: |
+          echo "Fetching branches…"
+          json=$(curl -s https://emr.clenicapp.com/api/get-branches)
+          # Ambil nama cabang dari response.data array
+          matrix=$(echo "$json" | jq -c '.data | [$‐]')  # format: ["cab1","cab2",…]
+          echo "::set-output name=matrix::$matrix"
+
+  build:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -27,7 +44,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifact
+          name: app-build
           path: ./dist/app-pkm/browser/
 
   deploy:
@@ -35,45 +52,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder:
-          [
-            indrapuri,
-            lampupok,
-            alang,
-            lampisang,
-            tabaro,
-            glie,
-            jantho,
-            darulkamal,
-            kanbada,
-            mesraya,
-            lhoong,
-            lhoknga,
-            leupung,
-            puceh,
-            meureubo,
-            johanpahlawan,
-            suakribee,
-            cotseumeureung,
-            peureumeu,
-            meutulang,
-            pasiemali,
-            kualabhee,
-            tangkeh,
-            kutapadanglayung,
-            drienrampak,
-            kulam,
-            ulka,
-            meuraxa,
-          ]
-
+        folder: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v3
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: build-artifact
+          name: app-build
           path: ./dist/app-pkm/browser/
 
       - name: FTP Deploy to ${{ matrix.folder }}
