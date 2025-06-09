@@ -14,23 +14,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # sesuaikan versi node yang kamu pakai
-      
+          node-version: "18" # sesuaikan versi node yang kamu pakai
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build app
         run: npm run build
-      
+
       - name: FTP Deploy to ${{ matrix.folder }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: 103.93.56.225
-          port: 2110
+          server: ${{ secrets.FTP_HOST }}
+          port: ${{ secrets.FTP_PORT }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/app-pkm/browser/
