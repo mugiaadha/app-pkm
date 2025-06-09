@@ -10,22 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: [tabaro.clenicapp.com/test-auto/]
+        folder: [tabaro.clenicapp.com]
 
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # sesuaikan versi node yang kamu pakai
-      
+          node-version: "18" # sesuaikan versi node yang kamu pakai
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build app
         run: npm run build
-      
+
       - name: FTP Deploy to ${{ matrix.folder }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -33,4 +33,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./app-pkm/
-          server-dir: ./${{ matrix.folder }}
+          server-dir: ./${{ matrix.folder }}/test-auto/
