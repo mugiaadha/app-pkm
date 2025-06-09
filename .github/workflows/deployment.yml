@@ -33,5 +33,5 @@ jobs:
           port: 2110
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/app-pkm/
+          local-dir: ./dist/app-pkm/browser/
           server-dir: ./${{ matrix.folder }}/test-auto/
