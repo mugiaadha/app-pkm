@@ -10,7 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: [tabaro.clenicapp.com]
+        folder:
+          [
+            kulam,
+            ulka,
+            meuraxa
+          ]
 
     steps:
       - uses: actions/checkout@v3
@@ -34,4 +39,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/app-pkm/browser/
-          server-dir: ./${{ matrix.folder }}/test-auto/
+          server-dir: ./${{ matrix.folder }}.clenicapp.com/test-auto/
