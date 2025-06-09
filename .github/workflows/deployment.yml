@@ -1,4 +1,4 @@
-name: Deploy Frontend
+name: Deploy FTP
 
 on:
   push:
@@ -6,106 +6,20 @@ on:
       - main
 
 jobs:
-  # deploy-frontend:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Setup SSH
-  #       run: |
-  #         mkdir -p ~/.ssh
-  #         echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-  #         chmod 600 ~/.ssh/id_rsa
-  #         ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-
-  #     - name: Checkout Frontend Repo
-  #       uses: actions/checkout@v2
-  #       with:
-  #         repository: mugiaadha/app-pkm
-  #         token: ${{ secrets.VPS_PAT_TOKEN }}
-  #         path: frontend
-
-  #     - name: Install dependencies & Build
-  #       run: |
-  #         npm install
-  #         npm run build
-  #       working-directory: frontend
-
-  #     - name: Download cabang-config.json from Supabase
-  #       run: |
-  #         curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
-
-  #     - name: Deploy Frontend to VPS
-  #       run: |
-  #         VPS_IP="${{ secrets.VPS_HOST }}"
-
-  #         ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' ../cabang-config.json)
-  #         INACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == false) | .subdomain' ../cabang-config.json)
-
-  #         for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
-  #           echo "Deploy ke $SUBDOMAIN"
-
-  #           fe_path="/var/www/html/$SUBDOMAIN/frontend"
-
-  #           ssh root@$VPS_IP "mkdir -p $fe_path"
-  #           rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' dist/app-pkm/browser/ root@$VPS_IP:$fe_path/ --log-file=rsync_log.txt
-  #         done
-
-  #         for SUBDOMAIN in $INACTIVE_SUBDOMAINS; do
-  #           echo "Set non-aktif page untuk $SUBDOMAIN"
-
-  #           fe_path="/var/www/html/$SUBDOMAIN/frontend"
-
-  #           ssh root@$VPS_IP "mkdir -p $fe_path"
-  #           rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" --delete --exclude='.git' ./inactive.html root@$VPS_IP:$fe_path/index.html --log-file=rsync_log.txt
-  #         done
-  #       working-directory: frontend
-
-  deploy-backend:
-    # needs: deploy-frontend
+  deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder: [tabaro.clenicapp.com/test-auto]  # isi folder yang mau di-deploy
 
     steps:
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+      - uses: actions/checkout@v3
 
-      - name: Checkout Backend Repo
-        uses: actions/checkout@v2
+      - name: FTP Deploy to ${{ matrix.folder }}
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          repository: mugiaadha/app-pkm-clenic
-          token: ${{ secrets.VPS_PAT_TOKEN }}
-          path: backend
-
-      - name: Download cabang-config.json from Supabase
-        run: |
-          curl -o cabang-config.json https://wulzrugvpldjbdsxscku.supabase.co/storage/v1/object/public/app-pkm/cabang-config.json
-
-      - name: Compress Backend Folder
-        run: |
-          tar --exclude='.git' --exclude='vendor' --exclude='report' \
-          -czf backend.tar.gz -C backend .
-
-      - name: Upload and Extract Backend on VPS (via rsync)
-        run: |
-          VPS_IP="${{ secrets.VPS_HOST }}"
-          ACTIVE_SUBDOMAINS=$(jq -r '.[] | select(.active == true) | .subdomain' cabang-config.json)
-
-          for SUBDOMAIN in $ACTIVE_SUBDOMAINS; do
-            echo "Deploy ke $SUBDOMAIN"
-            be_path="/var/www/html/$SUBDOMAIN/backend"
-
-            # Buat folder
-            ssh root@$VPS_IP "mkdir -p $be_path"
-
-            # Kirim arsip pakai rsync
-            rsync -avz -e "ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5" \
-            backend.tar.gz root@$VPS_IP:$be_path/
-
-            # Ekstrak arsip di VPS
-            ssh root@$VPS_IP "tar -xzf $be_path/backend.tar.gz -C $be_path && rm $be_path/backend.tar.gz"
-          done
-
-        working-directory: backend
+          server: 103.93.56.225:2110
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./build
+          server-dir: ./${{ matrix.folder }}
